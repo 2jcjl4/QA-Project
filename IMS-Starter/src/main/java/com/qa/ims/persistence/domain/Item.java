@@ -11,9 +11,9 @@ public class Item {
 		this.setPrice(price);
 	}
 
-	public Item(Long id, String firstName, Double price) {
+	public Item(Long id, String itemname, Double price) {
 		this.setId(id);
-		this.setItemName(firstName);
+		this.setItemName(itemname);
 		this.setPrice(price);
 	}
 	

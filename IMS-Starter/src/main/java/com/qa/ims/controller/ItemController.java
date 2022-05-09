@@ -4,10 +4,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.qa.ims.persistence.dao.CustomerDAO;
 import com.qa.ims.persistence.dao.ItemDAO;
-import com.qa.ims.persistence.domain.Customer;
 import com.qa.ims.persistence.domain.Item;
 import com.qa.ims.utils.Utils;
 
@@ -22,7 +19,7 @@ public class ItemController implements CrudController<Item> {
 	private ItemDAO itemDAO;
 	private Utils utils;
 
-	public ItemController(CustomerDAO customerDAO, Utils utils) {
+	public ItemController(ItemDAO itemDAO, Utils utils) {
 		super();
 		this.itemDAO = itemDAO;
 		this.utils = utils;
@@ -45,9 +42,9 @@ public class ItemController implements CrudController<Item> {
 	 */
 	@Override
 	public Item create() {
-		LOGGER.info("Please enter a first name");
+		LOGGER.info("Please enter a product name");
 		String itemName = utils.getString();
-		LOGGER.info("Please enter a surname");
+		LOGGER.info("Please enter a Price");
 		Double price = utils.getDouble();
 		Item item = itemDAO.create(new Item(itemName, price));
 		LOGGER.info("Item created");
