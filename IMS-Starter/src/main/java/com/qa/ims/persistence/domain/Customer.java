@@ -11,6 +11,12 @@ public class Customer {
 		this.setSurname(surname);
 	}
 
+	public Customer(Long id, String firstName, String surname) {
+		this.setId(id);
+		this.setFirstName(firstName);
+		this.setSurname(surname);
+	}
+
 	// GETTERS AND SETTERS
 	
 	public Long getId() {

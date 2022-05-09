@@ -11,6 +11,12 @@ public class Item {
 		this.setPrice(price);
 	}
 
+	public Item(Long id, String firstName, Double price) {
+		this.setId(id);
+		this.setItemName(firstName);
+		this.setPrice(price);
+	}
+	
 	// GETTERS AND SETTERS
 
 	public Long getId() {
