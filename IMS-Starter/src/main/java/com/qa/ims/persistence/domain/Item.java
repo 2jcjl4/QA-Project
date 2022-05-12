@@ -6,8 +6,8 @@ public class Item {
 	private String itemName;
 	private Double price;
 
-	public Item(String firstName, double price) {
-		this.setItemName(firstName);
+	public Item(String itemName, double price) {
+		this.setItemName(itemName);
 		this.setPrice(price);
 	}
 
