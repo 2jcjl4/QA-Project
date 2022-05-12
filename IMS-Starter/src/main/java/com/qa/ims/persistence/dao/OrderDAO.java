@@ -92,6 +92,19 @@ public class OrderDAO implements Dao<Order> {
 		}
 		return null;
 	}
+	
+	public Order readLatest1() {
+		try (Connection connection = DBUtils.getInstance().getConnection();
+				Statement statement = connection.createStatement();
+				ResultSet resultSet = statement.executeQuery("SELECT * FROM order_items ORDER BY id DESC LIMIT 1");) {
+			resultSet.next();
+			return modelFromResultSet1(resultSet);
+		} catch (Exception e) {
+			LOGGER.debug(e);
+			LOGGER.error(e.getMessage());
+		}
+		return null;
+	}
 
 	// ## Read items from a order ## 
 
@@ -137,17 +150,6 @@ public class OrderDAO implements Dao<Order> {
 	
 	@Override
 	public Order update(Order order) {
-		try (Connection connection = DBUtils.getInstance().getConnection();
-				PreparedStatement statement = connection
-						.prepareStatement("UPDATE orders SET product_name = ?, price = ? WHERE id = ?");) {
-			statement.setLong(1, order.getId());
-			statement.setDouble(2, order.getCustomer_ID());
-			statement.executeUpdate();;
-			return read(order.getId());
-		} catch (Exception e) {
-			LOGGER.debug(e);
-			LOGGER.error(e.getMessage());
-		}
 		return null;
 	}
 	
@@ -161,6 +163,7 @@ public class OrderDAO implements Dao<Order> {
 			statement.setLong(3, amount);
 			statement.setLong(4, customer_Id);
 			statement.executeUpdate();
+			return readLatest1();
 		} catch (Exception e) {
 			LOGGER.debug(e);
 			LOGGER.error(e.getMessage());
@@ -169,10 +172,10 @@ public class OrderDAO implements Dao<Order> {
 		return null;
 	}
 	// REMOVING A ITEM FROM A ORDER
-	public int remove(Long id) {
+	public int remove(Long id1) {
 		try (Connection connection = DBUtils.getInstance().getConnection();
 				PreparedStatement statement = connection.prepareStatement("DELETE FROM order_items WHERE id = ?");) {
-			statement.setLong(1, id);
+			statement.setLong(1, id1);
 			return statement.executeUpdate();
 		} catch (Exception e) {
 			LOGGER.debug(e);
