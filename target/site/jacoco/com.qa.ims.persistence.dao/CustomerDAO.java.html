@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomerDAO.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ims</a> &gt; <a href="index.source.html" class="el_package">com.qa.ims.persistence.dao</a> &gt; <span class="el_source">CustomerDAO.java</span></div><h1>CustomerDAO.java</h1><pre class="source lang-java linenums">package com.qa.ims.persistence.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import com.qa.ims.persistence.domain.Customer;
+import com.qa.ims.utils.DBUtils;
+
+<span class="fc" id="L16">public class CustomerDAO implements Dao&lt;Customer&gt; {</span>
+
+<span class="fc" id="L18">	public static final Logger LOGGER = LogManager.getLogger();</span>
+
+	@Override
+	public Customer modelFromResultSet(ResultSet resultSet) throws SQLException {
+<span class="fc" id="L22">		Long id = resultSet.getLong(&quot;id&quot;);</span>
+<span class="fc" id="L23">		String firstName = resultSet.getString(&quot;first_name&quot;);</span>
+<span class="fc" id="L24">		String surname = resultSet.getString(&quot;surname&quot;);</span>
+<span class="fc" id="L25">		return new Customer(id, firstName, surname);</span>
+	}
+
+	/**
+	 * Reads all customers from the database
+	 * 
+	 * @return A list of customers
+	 */
+	@Override
+	public List&lt;Customer&gt; readAll() {
+<span class="fc" id="L35">		try (Connection connection = DBUtils.getInstance().getConnection();</span>
+<span class="fc" id="L36">				Statement statement = connection.createStatement();</span>
+<span class="fc" id="L37">				ResultSet resultSet = statement.executeQuery(&quot;SELECT * FROM customers&quot;);) {</span>
+<span class="fc" id="L38">			List&lt;Customer&gt; customers = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">			while (resultSet.next()) {</span>
+<span class="fc" id="L40">				customers.add(modelFromResultSet(resultSet));</span>
+			}
+<span class="fc" id="L42">			return customers;</span>
+<span class="nc" id="L43">		} catch (SQLException e) {</span>
+<span class="nc" id="L44">			LOGGER.debug(e);</span>
+<span class="nc" id="L45">			LOGGER.error(e.getMessage());</span>
+		}
+<span class="nc" id="L47">		return new ArrayList&lt;&gt;();</span>
+	}
+
+	public Customer readLatest() {
+<span class="fc" id="L51">		try (Connection connection = DBUtils.getInstance().getConnection();</span>
+<span class="fc" id="L52">				Statement statement = connection.createStatement();</span>
+<span class="fc" id="L53">				ResultSet resultSet = statement.executeQuery(&quot;SELECT * FROM customers ORDER BY id DESC LIMIT 1&quot;);) {</span>
+<span class="fc" id="L54">			resultSet.next();</span>
+<span class="fc" id="L55">			return modelFromResultSet(resultSet);</span>
+<span class="nc" id="L56">		} catch (Exception e) {</span>
+<span class="nc" id="L57">			LOGGER.debug(e);</span>
+<span class="nc" id="L58">			LOGGER.error(e.getMessage());</span>
+		}
+<span class="nc" id="L60">		return null;</span>
+	}
+
+	/**
+	 * Creates a customer in the database
+	 * 
+	 * @param customer - takes in a customer object. id will be ignored
+	 */
+	@Override
+	public Customer create(Customer customer) {
+<span class="fc" id="L70">		try (Connection connection = DBUtils.getInstance().getConnection();</span>
+<span class="fc" id="L71">				PreparedStatement statement = connection</span>
+<span class="fc" id="L72">						.prepareStatement(&quot;INSERT INTO customers(first_name, surname) VALUES (?, ?)&quot;);) {</span>
+<span class="fc" id="L73">			statement.setString(1, customer.getFirstName());</span>
+<span class="fc" id="L74">			statement.setString(2, customer.getSurname());</span>
+<span class="fc" id="L75">			statement.executeUpdate();</span>
+<span class="fc" id="L76">			return readLatest();</span>
+<span class="nc" id="L77">		} catch (Exception e) {</span>
+<span class="nc" id="L78">			LOGGER.debug(e);</span>
+<span class="nc" id="L79">			LOGGER.error(e.getMessage());</span>
+		}
+<span class="nc" id="L81">		return null;</span>
+	}
+
+	@Override
+	public Customer read(Long id) {
+<span class="fc" id="L86">		try (Connection connection = DBUtils.getInstance().getConnection();</span>
+<span class="fc" id="L87">				PreparedStatement statement = connection.prepareStatement(&quot;SELECT * FROM customers WHERE id = ?&quot;);) {</span>
+<span class="fc" id="L88">			statement.setLong(1, id);</span>
+<span class="fc" id="L89">			try (ResultSet resultSet = statement.executeQuery();) {</span>
+<span class="fc" id="L90">				resultSet.next();</span>
+<span class="fc" id="L91">				return modelFromResultSet(resultSet);</span>
+			}
+<span class="nc" id="L93">		} catch (Exception e) {</span>
+<span class="nc" id="L94">			LOGGER.debug(e);</span>
+<span class="nc" id="L95">			LOGGER.error(e.getMessage());</span>
+		}
+<span class="nc" id="L97">		return null;</span>
+	}
+
+	/**
+	 * Updates a customer in the database
+	 * 
+	 * @param customer - takes in a customer object, the id field will be used to
+	 *                 update that customer in the database
+	 * @return
+	 */
+	@Override
+	public Customer update(Customer customer) {
+<span class="fc" id="L109">		try (Connection connection = DBUtils.getInstance().getConnection();</span>
+<span class="fc" id="L110">				PreparedStatement statement = connection</span>
+<span class="fc" id="L111">						.prepareStatement(&quot;UPDATE customers SET first_name = ?, surname = ? WHERE id = ?&quot;);) {</span>
+<span class="fc" id="L112">			statement.setString(1, customer.getFirstName());</span>
+<span class="fc" id="L113">			statement.setString(2, customer.getSurname());</span>
+<span class="fc" id="L114">			statement.setLong(3, customer.getId());</span>
+<span class="fc" id="L115">			statement.executeUpdate();</span>
+<span class="fc" id="L116">			return read(customer.getId());</span>
+<span class="nc" id="L117">		} catch (Exception e) {</span>
+<span class="nc" id="L118">			LOGGER.debug(e);</span>
+<span class="nc" id="L119">			LOGGER.error(e.getMessage());</span>
+		}
+<span class="nc" id="L121">		return null;</span>
+	}
+
+	/**
+	 * Deletes a customer in the database
+	 * 
+	 * @param id - id of the customer
+	 */
+	@Override
+	public int delete(long id) {
+<span class="fc" id="L131">		try (Connection connection = DBUtils.getInstance().getConnection();</span>
+<span class="fc" id="L132">				PreparedStatement statement = connection.prepareStatement(&quot;DELETE FROM customers WHERE id = ?&quot;);) {</span>
+<span class="fc" id="L133">			statement.setLong(1, id);</span>
+<span class="nc" id="L134">			return statement.executeUpdate();</span>
+<span class="fc" id="L135">		} catch (Exception e) {</span>
+<span class="fc" id="L136">			LOGGER.debug(e);</span>
+<span class="fc" id="L137">			LOGGER.error(e.getMessage());</span>
+		}
+<span class="fc" id="L139">		return 0;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

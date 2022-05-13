@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrderController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ims</a> &gt; <a href="index.source.html" class="el_package">com.qa.ims.controller</a> &gt; <span class="el_source">OrderController.java</span></div><h1>OrderController.java</h1><pre class="source lang-java linenums">package com.qa.ims.controller;
+
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.qa.ims.persistence.dao.OrderDAO;
+import com.qa.ims.persistence.domain.Order;
+
+import com.qa.ims.utils.Utils;
+
+/**
+ * Takes in customer details for CRUD functionality
+ *
+ */
+public class OrderController implements CrudController&lt;Order&gt; {
+
+<span class="fc" id="L19">	public static final Logger LOGGER = LogManager.getLogger();</span>
+	private OrderDAO orderDAO;
+	private Utils utils;
+	
+	public OrderController(OrderDAO orderDAO, Utils utils) {
+<span class="fc" id="L24">		super();</span>
+<span class="fc" id="L25">		this.orderDAO = orderDAO;</span>
+<span class="fc" id="L26">		this.utils = utils;</span>
+<span class="fc" id="L27">	}</span>
+
+	// READING ORDERS //
+	@Override
+	public List&lt;Order&gt; readAll() {
+		
+<span class="fc" id="L33">		LOGGER.info(&quot;would you like to see all orders&quot;</span>
+				+ &quot;\n&quot;
+				+ &quot;or see items in a order ?&quot;
+				+ &quot;\n&quot;
+				+ &quot;Please enter '1' to view all orders&quot;
+				+ &quot;\n&quot;
+				+ &quot;or enter '2' to view items in a order&quot;);
+
+<span class="fc" id="L41">		String operation = utils.getString();</span>
+<span class="pc bpc" id="L42" title="1 of 3 branches missed.">		switch (operation) {</span>
+		
+		// ## Reading all the orders ##
+		case &quot;1&quot;:
+<span class="fc" id="L46">			List&lt;Order&gt; orders = orderDAO.readAllA();</span>
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">			for (Order order : orders) {</span>
+<span class="nc" id="L48">				LOGGER.info(order);</span>
+<span class="nc" id="L49">			}</span>
+<span class="fc" id="L50">			break;		</span>
+		case &quot;2&quot;:
+		// ## Reading all the items in a order
+<span class="fc" id="L53">			LOGGER.info(&quot;Please enter the order ID you would like to see the contents of:&quot;);</span>
+<span class="fc" id="L54">			Long order_Id = utils.getLong();</span>
+<span class="fc" id="L55">			List&lt;Order&gt; order_items = orderDAO.read_Order(order_Id);</span>
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">			for (Order order : order_items) {</span>
+<span class="nc" id="L57">				LOGGER.info(order);</span>
+<span class="nc" id="L58">			}</span>
+			break;	
+		}
+<span class="fc" id="L61">		return null;</span>
+	}
+	
+
+	// CREATEING A ORDER //
+	@Override
+	public Order create() {
+		
+<span class="fc" id="L69">		LOGGER.info(&quot;Please enter your user ID&quot;);</span>
+<span class="fc" id="L70">		Long customer_id = utils.getLong();</span>
+<span class="fc" id="L71">		Order order = orderDAO.create(new Order(customer_id));</span>
+<span class="fc" id="L72">		LOGGER.info(&quot;Order created&quot;);</span>
+<span class="fc" id="L73">		return order;</span>
+	}
+
+	// UPDATING ITEMS IN A ORDER //
+	
+	@Override
+	public Order update() {
+		
+		// ## Introduction ## 
+<span class="fc" id="L82">		LOGGER.info(&quot;Please enter the ID of the order you would like to update&quot;);</span>
+<span class="fc" id="L83">		Long id = utils.getLong();</span>
+<span class="fc" id="L84">		LOGGER.info(&quot;Please enter the customer ID linked to the order&quot;);</span>
+<span class="fc" id="L85">		Long customer_Id = utils.getLong();</span>
+<span class="fc" id="L86">		LOGGER.info(&quot;would you like to 'ADD' or 'REMOVE' a item from this order&quot;);</span>
+<span class="fc" id="L87">		String operation = utils.getString();</span>
+		
+<span class="pc bpc" id="L89" title="1 of 3 branches missed.">		switch (operation) {</span>
+		case &quot;ADD&quot;:
+<span class="fc" id="L91">			LOGGER.info(&quot;Please enter the ID of the item you would like to add&quot;);</span>
+<span class="fc" id="L92">			Long item_Id = utils.getLong();</span>
+<span class="fc" id="L93">			LOGGER.info(&quot;\n&quot;</span>
+					+ &quot;Please enter how many of this item you would like&quot;);
+<span class="fc" id="L95">			Long amount = utils.getLong();</span>
+<span class="fc" id="L96">			orderDAO.add(id, item_Id, amount, customer_Id);</span>
+<span class="fc" id="L97">			break;</span>
+		
+		case &quot;REMOVE&quot;:
+<span class="fc" id="L100">			LOGGER.info(&quot;~~~### ORDER_ITEMS ###~~~&quot;);</span>
+<span class="fc" id="L101">			List&lt;Order&gt; order_items = orderDAO.read_Order(id);</span>
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">			for (Order order : order_items) {</span>
+<span class="nc" id="L103">				LOGGER.info(order);	</span>
+<span class="nc" id="L104">			orderDAO.read_Order(id);</span>
+<span class="nc" id="L105">			}</span>
+<span class="fc" id="L106">			LOGGER.info(&quot;Please enter the 'order_items' ID you want to remove&quot;</span>
+					+ &quot;\n&quot;);
+<span class="fc" id="L108">			Long id1 = utils.getLong();</span>
+<span class="fc" id="L109">			orderDAO.remove(id1);</span>
+		}
+<span class="fc" id="L111">		LOGGER.info(&quot;Order Updated&quot;);</span>
+<span class="fc" id="L112">		return null;</span>
+	}
+
+	// DELETING A ORDER AND ALL CONTENTS
+	@Override
+	public int delete() {
+<span class="fc" id="L118">		LOGGER.info(&quot;Please enter the id of the Order you would like to delete&quot;</span>
+				+ &quot;\n&quot;
+				+ &quot;WARNING THIS WILL REMOVE ALL THE ITEMS FROM THE ORDER AND THE ORDER&quot;);
+<span class="fc" id="L121">		Long id = utils.getLong();</span>
+<span class="fc" id="L122">		orderDAO.deletePt1(id);</span>
+<span class="fc" id="L123">		orderDAO.deletePt2(id);</span>
+<span class="fc" id="L124">		return 0;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
