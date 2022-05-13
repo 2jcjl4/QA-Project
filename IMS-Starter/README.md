@@ -1,4 +1,4 @@
-Coverage: 34%
+Coverage: 77.6%
 # Project Title
 
 One Paragraph of project description goes here
@@ -11,62 +11,37 @@ These instructions will get you a copy of the project up and running on your loc
 
 What things you need to install the software and how to install them
 
-```
-Give examples
-```
+git Bash - Terminal for pulling and pushing and using git comands
+MySQL Workbench - Database design tool used to reference from java
+Eclipse - The IDE used for developing the application in the langauge java
+Maven -used for creating and testing the application
+JUnit - used for creating and testing the application
 
-### Installing
 
-A step by step series of examples that tell you how to get a development env running
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests
 
-Explain how to run the automated tests for this system. Break down into which tests and what they do
+To run the automatic tests, open the project in a IDE of your choice and navigate your way to IMS-Starter/src/test/java now right click on this file and select coverage as then select 2junit test
 
 ### Unit Tests 
 
-Explain what these tests test, why and how to run them
+The unit tests within this application tests every method and class. the tests should all pass and no failiures. the only parts of this application that arn't tested is the Runner its self and exceptions.
 
-```
-Give an example
-```
 
-### Integration Tests 
-Explain what these tests test, why and how to run them
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
 
 ## Built With
 
 * [Maven](https://maven.apache.org/) - Dependency Management
+* git
+* github
+* Eclipse
+* java
+* MYSQL
+* Jira
+* Juni
+* Maven
+* Mockito
 
 ## Versioning
 
@@ -75,6 +50,7 @@ We use [SemVer](http://semver.org/) for versioning.
 ## Authors
 
 * **Chris Perrins** - *Initial work* - [christophperrins](https://github.com/christophperrins)
+* **James Long** - *Built ontop of* - [James Long](https://github.com/2jcjl4)
 
 ## License
 
@@ -84,6 +60,6 @@ This project is licensed under the MIT license - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+James Long
+Pawel Stypulkowski
+22AprEnable2 cohort 
